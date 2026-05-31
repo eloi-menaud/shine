@@ -4,5 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-# egui = "0.34.3"
+clap = { version = "4.6.1", features = ["derive"] }
 eframe = "0.34.3"
+egui_alignments = "0.3.8"
+serde = "1.0.228"
