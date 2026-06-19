@@ -18,6 +18,8 @@
 A Shell-based GUI Engine to build complex and reactive desktop apps directly from your shell
 </div>
 
+<br><br>
+
 # Create Desktop Apps From Shell Only
 
 Every programming language has its dedicated GUI toolkit: Python has Tkinter, Go has Fyne, Rust has iced. But what about the Shell?
@@ -26,7 +28,7 @@ Every programming language has its dedicated GUI toolkit: Python has Tkinter, Go
 
 With *SXML* (Shine XML), you get complete control over styling, layouts, components, and interactive callbacks. Giving you a modern, web-like development experience right in your terminal workflow.
 
-
+<br><br>
 
 # Why Shine?
 
