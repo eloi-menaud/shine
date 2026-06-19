@@ -1,24 +1,16 @@
 
-<div align="center">
+<div align="center" style="padding-top:10rem">
 
-<br><br>
+<img src="./rsc/shine_banner_dark.png" height="130em">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/eloi-menaud/shine/refs/heads/main/docs/src/rsc/shine_banner_dark.png" height="80">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/eloi-menaud/shine/refs/heads/main/docs/src/rsc/shine_banner_light.png" height="80">
-  <img alt="Shows a black logo in light color mode and a white one in dark color mode." src="" height="80">
-</picture>
+<i><b>SH</b>ell <b>IN</b>terface <b>E</b>ngine</i>    
 
-<br><br>
+<p>A Shell-based GUI Engine to build complex and reactive desktop apps directly from your shell</p>
 
-<i><b>SH</b>ell <b>IN</b>terface <b>E</b>ngine</i>
-
-<br>
-    
-A Shell-based GUI Engine to build complex and reactive desktop apps directly from your shell
 </div>
 
-# Create Desktop Apps From Shell Only
+
+## Create Desktop Apps From Shell Only
 
 Every programming language has its dedicated GUI toolkit: Python has Tkinter, Go has Fyne, Rust has iced. But what about the Shell?
 
@@ -28,7 +20,7 @@ With *SXML* (Shine XML), you get complete control over styling, layouts, compone
 
 
 
-# Why Shine?
+## Why Shine?
 
 - ⚡ **Shell-First Power** : Leverage the full power of Bash, Zsh, or any scripting language.make it easier thant never to create desktop app taht can interact with your system
 
@@ -38,9 +30,9 @@ With *SXML* (Shine XML), you get complete control over styling, layouts, compone
 
 - 🦀 **Powered by Rust** : Under the hood, Shine is fast, secure, and resource-efficient. No heavy browser runtimes, no massive memory footprints. Using iced as GUI engine
 
-<br> <br>
+<br> <br> <br>
 
-#### _The Backstory_
+#### _The Backstory
 _This project was born out of frustration.
 Running NixOS with a minimal compositor (Niri), I had zero default widgets.
 Doing basic stuff like shutting down or checking CPU temperature required typing commands, which is fun, but a nice widget-like app is pleasant too._

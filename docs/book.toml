@@ -1,0 +1,14 @@
+[book]
+title = "shine"
+authors = ["eloi-menaud"]
+language = "en"
+src = "src"
+
+
+[output.html]
+# cname = "kubesleeper.com"
+git-repository-url = "https://github.com/eloi-menaud/shine"
+additional-css = ["theme/custom.css"]
+default-theme = "coal"
+preferred-dark-theme = "coal"
+no-section-label = true
