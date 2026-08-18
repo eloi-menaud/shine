@@ -61,8 +61,7 @@ Right now, our app is not very useful because the buttons do not interact with t
 ### Step A: Make the Value Dynamic
 
 First, we need to represent the "count" using a variable.
-Remember that since this is a Shell script, you can dynamically generate your XML however you like.
-Here are two ways to achieve this (we will focus on the first approach):
+> Remember that since this is a Shell script, you can dynamically generate your XML however you like
 
 ```sh
 #!/bin/sh
@@ -76,22 +75,6 @@ cat <<EOF > $XML
     </row>
 </window>
 EOF
-```
-
-```sh
-#!/bin/sh
-
-cat <<EOF > $XML
-<window>
-    <row>
-        <btn><t> - </t></btn>
-        <t>{{COUNT}}</t>
-        <btn><t> + </t></btn>
-    </row>
-</window>
-EOF
-
-sed -i "s/{{COUNT}}/$RANDOM/" $XML
 ```
 
 Now, the displayed count is dynamically generated using the built-in `$RANDOM` variable. Each time the app starts, a different number will be shown.
@@ -127,7 +110,7 @@ Instead of just showing random numbers, we want to store, edit, and display a pe
 > This means `$COUNT` would be reset to `0` every single time the script runs.
 
 
-To prevent this, you must initialize the variable conditionally, only if it doesn't already exist:
+To prevent the previous warning, you must initialize the variable conditionally, only if it doesn't already exist:
 
 ```sh
 #!/bin/sh
@@ -151,9 +134,6 @@ EOF
 ```
 
 This way, the variable is initialized at runtime only when it is not already present in the environment.
-
-> [!tip]
-> A good practice is to create an `init_vars.sh` script containing all your variable initializations and simply source it here
 
 
 <br><br>
@@ -189,7 +169,7 @@ EOF
 ```
 
 Remember that this script generates static XML, meaning all `$` variables are evaluated during the Shell execution.
-The output XML written to $XML will look like this:
+The output XML written to `$XML` will look like this:
 
 ```xml
 <window>

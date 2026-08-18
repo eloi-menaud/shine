@@ -1,37 +1,28 @@
-
-
-use iced::{Background, Border, Color, Element, Length, Padding, alignment::{Horizontal, Vertical}, border::Radius, widget::{self, container, space::horizontal}};
+use iced::{Background, Border, Color, Element, Length, Padding, border::Radius, widget::container};
 use roxmltree::Node;
-use crate::{define_struct_with_names, parser::{ParseError, tags::{check_duplicate_attributes, extract_attribute}, types::Pixel}, render::Message};
-
-
-
-
+use crate::{define_struct_with_names, parser::{ParseError, tags::{Tag, check_duplicate_attributes, extract_attribute, extract_children}, types::Pixel}, render::Message};
 
 
 
 define_struct_with_names!{
     #[derive(Debug)]
-    pub struct T {
-        pub text: String,
-        pub horizontal_align: Horizontal,
-        pub vertical_align: Vertical,
-        pub color: Color,
-        // container
-        pub width: Length, 
+    pub struct Row {
+        pub children: Vec<Tag>,
+        pub spacing: Pixel,
+        pub width: Length,
         pub height: Length,
         pub padding: Padding,
         pub bg_color: Color,
-        pub border_color: Color,
         pub border_width: Pixel,
+        pub border_color: Color,
         pub border_radius: Radius,
     }
 }
 
-
-impl T {
+impl Row {
     pub fn from_node_ctx<'a, 'input>(node: Node<'a, 'input>, path: &mut Vec<String>) -> Result<Self, ParseError> {
-        path.push(String::from("t"));
+
+        path.push("row".to_string());
         
         // check_duplicate_attributes(node.attributes()).map_err(|e| ParseError::DuplicatedAttribute { attribute_name: e.to_string(), tag_path: path.clone(), range: node.range() })?;
         if let Some(invalid_attr) = node.attributes().find(|attr| !Self::ALL_FIELDS.contains(&attr.name())){
@@ -39,10 +30,8 @@ impl T {
         }
         
         Ok(Self{
-            text: node.text().unwrap_or("").to_string(),
-            horizontal_align: extract_attribute::<Horizontal>(node,Self::horizontal_align, &path)?.unwrap_or(Horizontal::Left),
-            vertical_align: extract_attribute::<Vertical>(node,Self::vertical_align, &path)?.unwrap_or(Vertical::Top),
-            color: extract_attribute::<Color>(node,Self::vertical_align, &path)?.unwrap_or(Color::WHITE),
+            children: extract_children(&node).into_iter().map(|node| Tag::from_node_ctx(node, path) ).collect::<Result<Vec<Tag>,ParseError>>()?,
+            spacing: extract_attribute(node, Self::spacing, &path)?.unwrap_or(0 as f32),
             // container
             width: extract_attribute(node, Self::width, &path)?.unwrap_or(Length::Shrink),
             height: extract_attribute(node, Self::height, &path)?.unwrap_or(Length::Shrink),
@@ -53,6 +42,7 @@ impl T {
             border_radius: extract_attribute(node, Self::border_radius, &path)?.unwrap_or(Radius::default())
         })
     }
+
 
     pub fn render<'a>(&self) -> Element<'a, Message> {
 
@@ -66,23 +56,14 @@ impl T {
             ..Default::default()
         };
         
-        container(
-            iced::widget::text(self.text.clone())
-            .align_x(self.horizontal_align)
-            .align_y(self.vertical_align)
-            .color(self.color)
-
+        container(iced::widget::row(self.children.iter().map(|tag| tag.render()))
+            .spacing(self.spacing)
         )
         .width(self.width)
         .height(self.height)
         .padding(self.padding)
         .style(move |_theme| style)
         .into()
-
-
-        
-        
     }
+
 }
-
-

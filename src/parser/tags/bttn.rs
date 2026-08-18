@@ -1,8 +1,8 @@
 
 
-use iced::{Background, Border, Color, Element, Length, Padding, alignment::{Horizontal, Vertical}, border::Radius, widget::{self, container, space::horizontal}};
+use iced::{Background, Border, Color, Element, Length, Padding, alignment::{Horizontal, Vertical}, border::Radius, widget::{self, button, container, space::horizontal}};
 use roxmltree::Node;
-use crate::{define_struct_with_names, parser::{ParseError, tags::{check_duplicate_attributes, extract_attribute}, types::Pixel}, render::Message};
+use crate::{define_struct_with_names, parser::{ParseError, tags::{Tag, check_duplicate_attributes, extract_attribute, extract_children}, types::Pixel}, render::Message};
 
 
 
@@ -12,11 +12,10 @@ use crate::{define_struct_with_names, parser::{ParseError, tags::{check_duplicat
 
 define_struct_with_names!{
     #[derive(Debug)]
-    pub struct T {
-        pub text: String,
-        pub horizontal_align: Horizontal,
-        pub vertical_align: Vertical,
-        pub color: Color,
+    pub struct Bttn {
+        pub child: Box<Tag>,
+        pub on_click: String,
+
         // container
         pub width: Length, 
         pub height: Length,
@@ -29,9 +28,9 @@ define_struct_with_names!{
 }
 
 
-impl T {
+impl Bttn {
     pub fn from_node_ctx<'a, 'input>(node: Node<'a, 'input>, path: &mut Vec<String>) -> Result<Self, ParseError> {
-        path.push(String::from("t"));
+        path.push(String::from("bttn"));
         
         // check_duplicate_attributes(node.attributes()).map_err(|e| ParseError::DuplicatedAttribute { attribute_name: e.to_string(), tag_path: path.clone(), range: node.range() })?;
         if let Some(invalid_attr) = node.attributes().find(|attr| !Self::ALL_FIELDS.contains(&attr.name())){
@@ -39,10 +38,8 @@ impl T {
         }
         
         Ok(Self{
-            text: node.text().unwrap_or("").to_string(),
-            horizontal_align: extract_attribute::<Horizontal>(node,Self::horizontal_align, &path)?.unwrap_or(Horizontal::Left),
-            vertical_align: extract_attribute::<Vertical>(node,Self::vertical_align, &path)?.unwrap_or(Vertical::Top),
-            color: extract_attribute::<Color>(node,Self::vertical_align, &path)?.unwrap_or(Color::WHITE),
+            child: Box::new(extract_children(&node).into_iter().map(|node| Tag::from_node_ctx(node, path) ).collect::<Result<Vec<Tag>,ParseError>>()?.into_iter().next().unwrap_or_default()),
+            on_click: node.attribute(Self::on_click).unwrap_or_default().to_string(),
             // container
             width: extract_attribute(node, Self::width, &path)?.unwrap_or(Length::Shrink),
             height: extract_attribute(node, Self::height, &path)?.unwrap_or(Length::Shrink),
@@ -55,8 +52,7 @@ impl T {
     }
 
     pub fn render<'a>(&self) -> Element<'a, Message> {
-
-        let style = container::Style {
+        let style = button::Style {
             background: Some(Background::Color(self.bg_color)),
             border: Border {
                 color: self.border_color,
@@ -65,23 +61,14 @@ impl T {
             },
             ..Default::default()
         };
-        
-        container(
-            iced::widget::text(self.text.clone())
-            .align_x(self.horizontal_align)
-            .align_y(self.vertical_align)
-            .color(self.color)
 
-        )
+        iced::widget::button( self.child.render())
+            .on_press(Message::Callback("bttn".to_string(),self.on_click.clone()))
         .width(self.width)
         .height(self.height)
         .padding(self.padding)
-        .style(move |_theme| style)
+        .style(move |_theme,_status| style)
         .into()
-
-
-        
-        
     }
 }
 

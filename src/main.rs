@@ -1,32 +1,66 @@
-use std::path::{Component, PathBuf};
-use clap::error::ContextValue::Strings;
-use log::LevelFilter;
-use roxmltree::Document;
-use serde::Deserialize;
+use std::{path::PathBuf};
+
+use clap::Parser;
+
+use crate::render::State;
 use std::io::Write;
 
+
 mod parser;
-
-use parser::tags::t;
-
-use crate::parser::tags::t::T;
+mod render;
+mod shell_session;
 
 
 
-fn main() {
 
-    let xml_data = r#"<t>Bonjour le monde</t>"#;
+#[derive(Parser, Debug, Clone)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+
+    /// Path to the builder executable file 
+    #[arg(value_name = "PATH")]
+    path: PathBuf,
+
+    // /// Verbose mode
+    // #[arg(short,long)]
+    // verbose: bool,
+
+    // /// Tracing mode
+    // #[arg(long)]
+    // tracing: bool,
+}
+
+
+
+
+fn main() -> iced::Result {
+    let cli = Cli::parse();
+
+
     
-    // 1. Parse le document XML en arbre roxmltree
-    let doc = Document::parse(xml_data).unwrap();
+    env_logger::Builder::new()
+        .filter_level(log::LevelFilter::Off)
+        .filter_module(env!("CARGO_PKG_NAME"), log::LevelFilter::Info)
+        .format(|buf, record| {
+            writeln!(buf, "{}", record.args())
+        })
+        .init();
 
-    // 2. Récupère le nœud racine <t>
-    let root = doc.root_element();
+    let path = cli.path;
 
-    // 3. Conversion idiomatique grâce à try_into()
-    let t_obj: t::T = T::into_node_ctx(root, &mut Vec::new()).unwrap(); //(&root)
+    iced::application(
+            move || {
+            let mut state = State::new(path.clone());
+            state.build();
+            state
+        },
+        State::update,
+        State::view
+    )
+    .title(move |s: &State| s.title.clone())
+    .run()
 
-    // Affichage de l'objet instancié
-    println!("{:#?}", t_obj);
 
 }
+
+ 

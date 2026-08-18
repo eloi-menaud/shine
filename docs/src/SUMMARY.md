@@ -6,9 +6,16 @@
 - [Create an app](./create_an_app.md)
 
 # Tags
-- [<window\> (window)](./tags/window.md)
-- [<t\> (text)](./tags/t.md)
-- [<btn\> (button)](./tags/btn.md)
-- [<col\> (column)](./tags/col.md)
-- [<row\> (row)](./tags/row.md)
 
+- [root / config]()
+  - [\<window> (window)](./tags/window.md)
+
+- [display]()
+  - [\<t> (text)](./tags/t.md)
+
+- [container]()  
+  - [\<col> (column)](./tags/col.md)
+  - [\<row> (row)](./tags/row.md)
+
+- [info]()
+  - [Attribute types](./tags/attribute_types.md)
